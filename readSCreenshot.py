@@ -12,6 +12,8 @@ import pyscreenshot
 # Bottom Left: x=750, y=794
 # Bottom Right: x=1165, y=794
 # End Button: x=945, y=845
+# X for Give Up: x=1170, y=419
+# No for Give Up: x=1063, y=543
 
 # Configure the module
 pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -20,7 +22,7 @@ x_coords = [795, 897, 1000, 1104]
 y_coords = [405, 510, 610, 715]
 buttons = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
 
-pyautogui.PAUSE = 0.005
+pyautogui.PAUSE = 0.01
 
 # Increment the variable (also accounting for if the variable exceeds 4).
 def increment(value : int):
@@ -51,51 +53,7 @@ def tap_button(x : int, y : int):
     
     #print(buttons)
 
-def tap_end():
-    pyautogui.moveTo(945, 845, duration = 0.001)
-    pyautogui.click(945, 845)
-
-# Get all numbers from game.
-def get_nums():
-    for i in range(4):
-        for j in range(4):
-            image = pyscreenshot.grab(bbox=(x_coords[j], y_coords[i], x_coords[j] + 20, y_coords[i] + 40)) # Capture the button number.
-            image.save("screenshots/" + str((i * 4) + j) + ".png") # Save to file.
-
-
-#image = pyscreenshot.grab(bbox=(750, 365, 1165, 794)) # Capture the screen.
-#image = pyscreenshot.grab(bbox=(795, 400, 820, 440)) # Capture the screen.
-#image.save("screen.png") # To save the screenshot
-
-for k in range(5):
-    get_nums()
-    # Get all the numbers and save them to the buttons 2d array.
-    for i in range(4):
-        
-        for j in range(4):
-            img = cv2.imread("screenshots/" + str((i * 4) + j) + ".png") # Read the image.
-            buttons[i][j] = pytesseract.image_to_string(img, config="--psm 13")[0] # Gets the first number value.
-            
-            # Sometimes it'll recognize a 2 as something else.
-            if buttons[i][j] == 'i':
-                buttons[i][j] = 1
-            
-            # Sometimes it'll recognize a 2 as something else.
-            if buttons[i][j] == 'q' or buttons[i][j] == 'Q':
-                buttons[i][j] = 2
-            
-            # Sometimes it'll recognize a 3 as something else.
-            if buttons[i][j] == 'g' or buttons[i][j] == 'g' or buttons[i][j] == '5' or buttons[i][j] == '8' or buttons[i][j] == 'a' or buttons[i][j] == 'B':
-                buttons[i][j] = 3
-            
-            # Sometimes it'll recognize a 4 as something else.
-            if buttons[i][j] == 'z' or buttons[i][j] == 'Z' or buttons[i][j] == 'A':
-                buttons[i][j] = 4
-            
-            buttons[i][j] = int(buttons[i][j])
-            print(buttons[i][j])
-
-
+def check_tops():
     for i in range(3):
         
         while(buttons[0 + i][0] != buttons[0 + i][1]):
@@ -118,31 +76,34 @@ for k in range(5):
         elif buttons[0 + i][3] == 4:
             tap_button(3, 1 + i)
 
+def check_bottom():
     count = 0
     while(buttons[3][0] != buttons[3][1]):
         tap_button(2, 3)
         count += 1
     
-    count = 4 - count
-    for i in range(count):
-        tap_button(2, 1)
+    if count != 0:
+        count = 4 - count
+        for i in range(count):
+            tap_button(2, 1)
 
-    count = 4 - count
-    for i in range(count):
-        tap_button(2, 0)
+        count = 4 - count
+        for i in range(count):
+            tap_button(2, 0)
 
     count = 0
     while(buttons[3][2] != buttons[3][3]):
         tap_button(1, 3)
         count += 1
     
-    count = 4 - count
-    for i in range(count):
-        tap_button(1, 1)
+    if count != 0:
+        count = 4 - count
+        for i in range(count):
+            tap_button(1, 1)
 
-    count = 4 - count
-    for i in range(count):
-        tap_button(1, 0)
+        count = 4 - count
+        for i in range(count):
+            tap_button(1, 0)
 
     count = 0
     if buttons[3][0] == 2: count = 3
@@ -177,7 +138,56 @@ for k in range(5):
         count = 4 - count
         for i in range(count):
             tap_button(3, 0)
+
+def tap_end():
+    pyautogui.moveTo(945, 845, duration = 0.001)
+    pyautogui.click(945, 845)
+
+# Get all numbers from game.
+def get_nums():
+    for i in range(4):
+        for j in range(4):
+            image = pyscreenshot.grab(bbox=(x_coords[j], y_coords[i], x_coords[j] + 20, y_coords[i] + 40)) # Capture the button number.
+            image.save("screenshots/" + str((i * 4) + j) + ".png") # Save to file.
+
+
+#image = pyscreenshot.grab(bbox=(750, 365, 1165, 794)) # Capture the screen.
+#image = pyscreenshot.grab(bbox=(795, 400, 820, 440)) # Capture the screen.
+#image.save("screen.png") # To save the screenshot
+
+for k in range(5):
+    get_nums()
+    # Get all the numbers and save them to the buttons 2d array.
+    for i in range(4):
+        
+        for j in range(4):
+            img = cv2.imread("screenshots/" + str((i * 4) + j) + ".png") # Read the image.
+            buttons[i][j] = pytesseract.image_to_string(img, config="--psm 13")[0] # Gets the first number value.
+            
+            # Sometimes it'll recognize a 2 as something else.
+            if buttons[i][j] == 'i':
+                buttons[i][j] = 1
+            
+            # Sometimes it'll recognize a 2 as something else.
+            if buttons[i][j] == 'q' or buttons[i][j] == 'Q' or buttons[i][j] == 'D':
+                buttons[i][j] = 2
+            
+            # Sometimes it'll recognize a 3 as something else.
+            if buttons[i][j] == 'g' or buttons[i][j] == 'e' or buttons[i][j] == '5' or buttons[i][j] == '8' or buttons[i][j] == 'a' or buttons[i][j] == 'B' or buttons[i][j] == ')':
+                buttons[i][j] = 3
+            
+            # Sometimes it'll recognize a 4 as something else.
+            if buttons[i][j] == 'z' or buttons[i][j] == 'Z' or buttons[i][j] == 'A':
+                buttons[i][j] = 4
+            
+            buttons[i][j] = int(buttons[i][j])
+            print(buttons[i][j])
+    
+    check_tops()
+    check_bottom()
     
     time.sleep(0.1)
     tap_end()
-    pyautogui.moveTo(100, 100, duration=0)
+    pyautogui.moveTo(1063, 543, duration=0.3)
+    pyautogui.click(1063, 543)
+    pyautogui.moveTo(100, 100, duration=0.01)
