@@ -153,7 +153,6 @@ def screenshot():
 
 def get_nums():
     
-    good = True
     # Get all the numbers and save them to the buttons 2d array.
     for i in range(4):
         
@@ -180,15 +179,11 @@ def get_nums():
             buttons[i][j] = int(buttons[i][j])
             
             if buttons[i][j] > 4 or buttons[i][j] < 1:
-                good = False
-                break
+                j -= 1
+                continue
             
             print(buttons[i][j])
-        if not(good):
-            break
     
-    if not(good):
-        get_nums()
 
 #image = pyscreenshot.grab(bbox=(750, 365, 1165, 794)) # Capture the screen.
 #image = pyscreenshot.grab(bbox=(795, 400, 820, 440)) # Capture the screen.
