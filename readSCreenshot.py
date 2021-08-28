@@ -21,6 +21,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tess
 x_coords = [795, 897, 1000, 1104]
 y_coords = [405, 510, 610, 715]
 buttons = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+NUM_GAMES = 100
 
 pyautogui.PAUSE = 0.01
 
@@ -144,19 +145,15 @@ def tap_end():
     pyautogui.click(945, 845)
 
 # Get all numbers from game.
-def get_nums():
+def screenshot():
     for i in range(4):
         for j in range(4):
             image = pyscreenshot.grab(bbox=(x_coords[j], y_coords[i], x_coords[j] + 20, y_coords[i] + 40)) # Capture the button number.
             image.save("screenshots/" + str((i * 4) + j) + ".png") # Save to file.
 
-
-#image = pyscreenshot.grab(bbox=(750, 365, 1165, 794)) # Capture the screen.
-#image = pyscreenshot.grab(bbox=(795, 400, 820, 440)) # Capture the screen.
-#image.save("screen.png") # To save the screenshot
-
-for k in range(5):
-    get_nums()
+def get_nums():
+    
+    good = True
     # Get all the numbers and save them to the buttons 2d array.
     for i in range(4):
         
@@ -181,7 +178,26 @@ for k in range(5):
                 buttons[i][j] = 4
             
             buttons[i][j] = int(buttons[i][j])
+            
+            if buttons[i][j] > 4 or buttons[i][j] < 1:
+                good = False
+                break
+            
             print(buttons[i][j])
+        if not(good):
+            break
+    
+    if not(good):
+        get_nums()
+
+#image = pyscreenshot.grab(bbox=(750, 365, 1165, 794)) # Capture the screen.
+#image = pyscreenshot.grab(bbox=(795, 400, 820, 440)) # Capture the screen.
+#image.save("screen.png") # To save the screenshot
+
+for k in range(NUM_GAMES):
+    screenshot()
+    get_nums()
+    
     
     check_tops()
     check_bottom()
