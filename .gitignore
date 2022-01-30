@@ -1,6 +1,8 @@
 # Extra
 screenshots
 screenshots/*
+screenshots/
+hard_screenshots/
 *.png
 
 # Byte-compiled / optimized / DLL files

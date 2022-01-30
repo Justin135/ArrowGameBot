@@ -21,7 +21,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tess
 x_coords = [795, 897, 1000, 1104]
 y_coords = [405, 510, 610, 715]
 buttons = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
-NUM_GAMES = 100
+NUM_GAMES = 250
 
 pyautogui.PAUSE = 0.01
 
@@ -57,9 +57,22 @@ def tap_button(x : int, y : int):
 def check_tops():
     for i in range(3):
         
+        temp = 0
         while(buttons[0 + i][0] != buttons[0 + i][1]):
             tap_button(2, 1 + i)
-
+            temp += 1
+            
+            if temp == 4:
+                break
+        
+        if temp == 4:
+            i -= 1
+            
+            pyautogui.moveTo(100, 100, duration=0.01)
+            screenshot()
+            get_nums()
+            continue
+        
         while(buttons[0 + i][2] != buttons[0 + i][3]):
             tap_button(1, 1 + i)
 
@@ -161,15 +174,15 @@ def get_nums():
             buttons[i][j] = pytesseract.image_to_string(img, config="--psm 13")[0] # Gets the first number value.
             
             # Sometimes it'll recognize a 2 as something else.
-            if buttons[i][j] == 'i':
+            if buttons[i][j] == 'i' or buttons[i][j] == ' ' or buttons[i][j] == '\0':
                 buttons[i][j] = 1
             
             # Sometimes it'll recognize a 2 as something else.
-            if buttons[i][j] == 'q' or buttons[i][j] == 'Q' or buttons[i][j] == 'D':
+            if buttons[i][j] == 'q' or buttons[i][j] == 'Q' or buttons[i][j] == 'p' or buttons[i][j] == 'D' or buttons[i][j] == 'P' or buttons[i][j] == 'y':
                 buttons[i][j] = 2
             
             # Sometimes it'll recognize a 3 as something else.
-            if buttons[i][j] == 'g' or buttons[i][j] == 'e' or buttons[i][j] == '5' or buttons[i][j] == '8' or buttons[i][j] == 'a' or buttons[i][j] == 'B' or buttons[i][j] == ')':
+            if buttons[i][j] == 'g' or buttons[i][j] == 's' or buttons[i][j] == '§' or buttons[i][j] == 'e' or buttons[i][j] == '5' or buttons[i][j] == '8' or buttons[i][j] == 'a' or buttons[i][j] == 'B' or buttons[i][j] == ')' or buttons[i][j] == 'x':
                 buttons[i][j] = 3
             
             # Sometimes it'll recognize a 4 as something else.
@@ -182,7 +195,11 @@ def get_nums():
                 j -= 1
                 continue
             
-            print(buttons[i][j])
+            print(buttons[i][j], end = " ")
+            
+            if buttons[i][j] == "": print("N ")
+        print("")
+    print("")
     
 
 #image = pyscreenshot.grab(bbox=(750, 365, 1165, 794)) # Capture the screen.
